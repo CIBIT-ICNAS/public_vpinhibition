@@ -1,0 +1,97 @@
+
+FileVersion:		2 
+
+ResolutionOfTime:	Volumes 
+
+Experiment:			VisualPerception_CrossInhibition 
+
+BackgroundColor:	0  0  0 
+TextColor:			255  255  255 
+
+TimeCourseColor:	1  1  1 
+TimeCourseThick:	3 
+ReferenceFuncColor:	0   0  80 
+ReferenceFuncThick:	2 
+
+NrOfConditions:		8 
+ 
+Static 
+12 
+1	6 
+22	27 
+43	48 
+64	69 
+85	90 
+106	111 
+127	132 
+148	153 
+169	174 
+190	195 
+211	216 
+232	237 
+Color:	170 170 170 
+
+Coherent 
+4 
+49	54 
+112	117 
+175	180 
+238	243 
+Color:	150 210 240 
+
+Incoherent 
+4 
+7	12 
+70	75 
+133	138 
+196	201 
+Color:	150 170 200 
+
+NonAdapt 
+4 
+28	33 
+91	96 
+154	159 
+217	222 
+Color:	150 130 160 
+
+Ambiguous_aCoh 
+4 
+55	60 
+118	123 
+181	186 
+244	249 
+Color:	200 170 100 
+
+Ambiguous_aInCoh 
+4 
+13	18 
+76	81 
+139	144 
+202	207 
+Color:	200 170 120 
+
+Ambiguous_aNA 
+4 
+34	39 
+97	102 
+160	165 
+223	228 
+Color:	200 170 140 
+
+MAE 
+12 
+19	21 
+40	42 
+61	63 
+82	84 
+103	105 
+124	126 
+145	147 
+166	168 
+187	189 
+208	210 
+229	231 
+250	252 
+Color:	120 120 120 
+
