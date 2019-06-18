@@ -12,7 +12,7 @@ Visual Perception group at the Coimbra Institute for Biomedical Imaging and Tran
 ## Index
 1. **A_stimulus** - stimulus scripts.
 2. **B_keypress** - scripts for analysing keypress data.
-3. **C_spm_scripts** - scripts for data analysis with spm.
+3. **C_spm_era** - scripts for data analysis with spm.
 
 ---
 ## Requirements
