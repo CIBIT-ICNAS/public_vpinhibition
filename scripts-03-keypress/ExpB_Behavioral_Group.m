@@ -15,10 +15,8 @@ clear,clc,close all
 %% Initialize stuff
 
 % Folders
-drive_folder = fullfile('...','ICNAS_VisualPerception','Inhibition');
-
-input_prtPath = fullfile(drive_folder,'prt'); % Protocol files
-input_output_keyPath = fullfile(drive_folder,'expB-analysis-keypress'); % output folder
+input_prtPath = fullfile('..','data','prt'); % Protocol files
+input_output_keyPath = fullfile('..','data','expB-analysis-keypress'); % output folder
 
 inputFolderDir = dir(fullfile(input_output_keyPath,'S*_KeyResults.mat'));
 nSubjects = length(inputFolderDir);
