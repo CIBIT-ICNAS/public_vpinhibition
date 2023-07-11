@@ -23,7 +23,7 @@ runs = datasetConfigs.runs{1,1}(2:end);
 nRuns = length(runs);
 nSubjects = length(datasetConfigs.subjects);
 nRois = 2 + 1; %LEFT, RIGHT, BILATERAL
-delay_tc = 4; % haemodynamic delay in volumes
+delay_tc = 0; % haemodynamic delay in volumes
 
 roiSizeTag = '5mm';
 
