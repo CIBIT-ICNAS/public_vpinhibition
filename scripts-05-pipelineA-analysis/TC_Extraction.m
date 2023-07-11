@@ -23,7 +23,7 @@ runs = datasetConfigs.runs{1,1}(2:end);
 nRuns = length(runs);
 nSubjects = length(datasetConfigs.subjects);
 nRois = 2 + 1; %LEFT, RIGHT, BILATERAL
-delay_tc = 0; % haemodynamic delay in volumes
+delay_tc = 4; % haemodynamic delay in volumes
 
 roiSizeTag = '5mm';
 
@@ -31,7 +31,7 @@ tcArray = cell(nSubjects,nRuns,nRois); % TCs from all subjects, all runs, all ro
 
 pscArray = cell(nSubjects,nRuns,nRois); % PSC from all subjects, all runs, all rois
 
-outputFolder = fullfile('...','ICNAS_VisualPerception','Inhibition','expC-analysis-spm');
+outputFolder = fullfile('..','data','expC-analysis-spm');
 
 %% Iterate on the subjects
 for subjectIndex = 1:nSubjects
