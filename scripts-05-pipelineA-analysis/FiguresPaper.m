@@ -274,14 +274,15 @@ trialLabels = {'Coherent \rightarrow Coherent';'Incoherent \rightarrow Coherent'
 clrMap = lines;
 x_auc = (15:22) + delay_tc; % 1 before + test block + 1 after
 xvector = 0:length(x_auc)-1;
+xvectorlabel = 15:22;
 xx = [-1 length(x_auc)];
 yy = [-0.5 0.7];
 yvector = sort([yy(1):0.2:yy(2) 0]);
 lwidth = 1.5;
 
 s1 = subplot(1,2,1);
-line([0.5 0.5],yy,'LineStyle','--','Color','k')
-line([6.5 6.5],yy,'LineStyle','--','Color','k')
+line([0.5 0.5],yy,'LineStyle',':','Color','k')
+%line([6.5 6.5],yy,'LineStyle','--','Color','k')
 line(xx,[0 0],'LineStyle',':','Color','k')
 
 hold on
@@ -297,7 +298,7 @@ plot(find(TTestRes(1,:))-1, 0.55*ones(1,length(find(TTestRes(1,:)))),'*','Color'
 hold off
 
 xlim(xx), ylim(yy)
-xticks(xvector)
+xticks(xvector), xticklabels(xvectorlabel)
 yticks(yvector)
 legend([e1.mainLine e2.mainLine e3.mainLine],trialLabels(1:3),'FontSize',14,'Location','Southwest')
 box on
@@ -307,8 +308,8 @@ s1.FontSize = 15;
 
 %-------------------------------------------------------
 s4 = subplot(1,2,2);
-line([0.5 0.5],yy,'LineStyle','--','Color','k')
-line([6.5 6.5],yy,'LineStyle','--','Color','k')
+line([0.5 0.5],yy,'LineStyle',':','Color','k')
+%line([6.5 6.5],yy,'LineStyle','--','Color','k')
 line(xx,[0 0],'LineStyle',':','Color','k')
 
 hold on
@@ -324,7 +325,7 @@ plot(find(TTestRes(3,:))-1,0.55*ones(1,length(find(TTestRes(3,:)))),'*','Color',
 hold off
 
 xlim(xx), ylim(yy)
-xticks(xvector)
+xticks(xvector), xticklabels(xvectorlabel)
 yticks(yvector)
 legend([e1.mainLine e2.mainLine e3.mainLine],trialLabels([5 4 6]),'FontSize',14,'Location','southwest')
 box on

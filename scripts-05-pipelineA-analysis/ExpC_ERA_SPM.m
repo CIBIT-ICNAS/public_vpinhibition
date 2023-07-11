@@ -39,10 +39,6 @@ nTrials = length(selectedRuns) * nTrialsPerRun;
 TCP = struct(); % TimeCourse and Protocol data
 ERA = struct(); % ERA data
 
-% --- Haemodynamic Delay for the plots
-delay_tc = 4; % in volumes
-delay_plot = 0; %in volumes
-
 %% Extract experimental Protocol info
 
 for r = selectedRuns
@@ -59,6 +55,10 @@ end
 load(fullfile(ioFolder,'TCs-MT-5mm.mat'))
 
 voiNames = {'leftMT','rightMT','bilateralMT'};
+
+%% --- Haemodynamic Delay for the plots
+delay_tc = 3; % in volumes
+delay_plot = 0; %in volumes
 
 %% Create ERA
 
@@ -80,6 +80,7 @@ for v = 1:nRois
         nTrialVols = 30; % 3 (static) + 12 (adaptation) + 6 (test) + 3 (MAE) + 3 (report) + 3 (static) = 30 volumes
         ERA.(voiNames{v}).(trialTestTps{t}).psc.data = zeros(nTrials,nTrialVols);
         ERA.(voiNames{v}).(trialTestTps{t}).psc2static.data = zeros(nTrials,nTrialVols);
+
         % For the mean (nTrials+1), sem (nTrials+2), median (nTrials+3) and semedian (nTrials+4) of the above trials.
         ERA.(voiNames{v}).(trialTestTps{t}).psc.stats = zeros(4,nTrialVols);
         ERA.(voiNames{v}).(trialTestTps{t}).psc2stats.stats = zeros(4,nTrialVols);
@@ -324,6 +325,7 @@ suptitle(sprintf('ERA of Bilateral hMT+ - Subject %s - Full trial',subjectName))
 print(fig2,fullfile(outputFolder,[ subjectName '_BilateralMT_D' num2str(delay_plot) '_FullTrial_psc2static']),'-dpng')
 
 %% Calculate AuC of Test blocks
+x_tonorm = 15 + delay_tc;
 x_auc = (15:22) + delay_tc; % 1 before + test block + 1 after
 
 Y_AUC = struct();
@@ -347,12 +349,12 @@ for tt = 1:3
     
     % --- Retrieve TC values normalising with the first value of each trial type
     Y_AUC.(trialTestTps{tt}).psc.psc_norm = Y_AUC.(trialTestTps{tt}).psc.psc - ...
-        mean(ERA.bilateralMT.(trialTestTps{tt}).psc.stats(1,x_auc(1)));
+        mean(ERA.bilateralMT.(trialTestTps{tt}).psc.stats(1,x_tonorm));
 
     % --- Retrieve TC values normalising with the first value of each trial
     % type (psc2static)
     Y_AUC.(trialTestTps{tt}).psc2static.psc_norm = Y_AUC.(trialTestTps{tt}).psc2static.psc - ...
-        mean(ERA.bilateralMT.(trialTestTps{tt}).psc2static.stats(1,x_auc(1)));
+        mean(ERA.bilateralMT.(trialTestTps{tt}).psc2static.stats(1,x_tonorm));
     
     % --- Find minimum of the three trials
     if min(Y_AUC.(trialTestTps{tt}).psc.psc_norm) < absMin13.psc
@@ -379,12 +381,12 @@ for tt = 4:6
     % --- Retrieve TC values normalising with the average of the three last
     % points before test of each trial type
     Y_AUC.(trialTestTps{tt}).psc.psc_norm = Y_AUC.(trialTestTps{tt}).psc.psc - ...
-        mean(ERA.bilateralMT.(trialTestTps{tt}).psc.stats(1,x_auc(1)));
+        mean(ERA.bilateralMT.(trialTestTps{tt}).psc.stats(1,x_tonorm));
 
     % --- Retrieve TC values normalising with the average of the three last
     % points before test of each trial type (psc2static)
     Y_AUC.(trialTestTps{tt}).psc2static.psc_norm = Y_AUC.(trialTestTps{tt}).psc2static.psc - ...
-        mean(ERA.bilateralMT.(trialTestTps{tt}).psc2static.stats(1,x_auc(1)));
+        mean(ERA.bilateralMT.(trialTestTps{tt}).psc2static.stats(1,x_tonorm));
     
     % --- Find minimum of the three trials
     if min(Y_AUC.(trialTestTps{tt}).psc.psc_norm) < absMin46.psc

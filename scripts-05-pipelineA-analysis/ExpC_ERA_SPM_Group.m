@@ -261,6 +261,7 @@ print(fig2,fullfile(outputFolder,sprintf('GroupERA_N%i_BilateralMT_D%i_FullTrial
 %% Prepare The ultimate plot
 trialLabels = {'Coh \rightarrow Coh';'InCoh \rightarrow Coh';'NA \rightarrow Coh';'Coh \rightarrow InCoh';'InCoh \rightarrow InCoh';'NA \rightarrow InCoh'};
 clrMap = lines;
+delay_tc = 3;
 x_auc = (15:22) + delay_tc; % 1 before + test block + 1 after
 xvector = 0:length(x_auc)-1;
 xx = [-1 length(x_auc)];
@@ -388,6 +389,37 @@ for jj = 1:8
     
 end
 
+%% Calculate point to point t-tests in the full curve
+% Bonferroni correction with 3 comparions
+
+% TTestRes = zeros(4,8);
+% alpha = 0.05;
+% nComp = 3;
+% 
+% for jj = 1:30
+%     
+%    [TTestRes(1,jj),TTestRes(2,jj)] = ttest(ERA_G.BilateralMT.Coh_aCoh.psc.mean(:,jj),ERA_G.BilateralMT.Coh_aInCoh.psc.mean(:,jj));
+%    
+%    [TTestRes(3,jj),TTestRes(4,jj)] = ttest(ERA_G.BilateralMT.InCoh_aCoh.psc.mean(:,jj),ERA_G.BilateralMT.InCoh_aInCoh.psc.mean(:,jj));
+% 
+%    [TTestRes(5,jj),TTestRes(6,jj)] = ttest(ERA_G.BilateralMT.Coh_aInCoh.psc.mean(:,jj),ERA_G.BilateralMT.Coh_aNA.psc.mean(:,jj));
+% 
+%    [TTestRes(7,jj),TTestRes(8,jj)] = ttest(ERA_G.BilateralMT.InCoh_aCoh.psc.mean(:,jj),ERA_G.BilateralMT.InCoh_aNA.psc.mean(:,jj));
+%    
+%    TTestRes(2,jj) = TTestRes(2,jj) * nComp;
+%    TTestRes(1,jj) = TTestRes(2,jj) < alpha;
+% 
+%    TTestRes(4,jj) = TTestRes(4,jj) * nComp;
+%    TTestRes(3,jj) = TTestRes(4,jj) < alpha;
+% 
+%    TTestRes(6,jj) = TTestRes(6,jj) * nComp;
+%    TTestRes(5,jj) = TTestRes(6,jj) < alpha;
+% 
+%    TTestRes(8,jj) = TTestRes(8,jj) * nComp;
+%    TTestRes(7,jj) = TTestRes(8,jj) < alpha;
+%       
+% end
+
 %% Calculate point to point t-tests
 % Bonferroni correction with 3 comparions
 
@@ -397,14 +429,14 @@ nComp = 3;
 
 for jj = 1:8
     
-   [TTestRes(1,jj),TTestRes(2,jj)] = ttest(Y_AUC_G.Coh_aCoh.psc2static.data(:,jj),Y_AUC_G.Coh_aInCoh.psc2static.data(:,jj));
+   [TTestRes(1,jj),TTestRes(2,jj)] = ttest(Y_AUC_G.Coh_aCoh.psc.data(:,jj),Y_AUC_G.Coh_aInCoh.psc.data(:,jj));
    
-   [TTestRes(3,jj),TTestRes(4,jj)] = ttest(Y_AUC_G.InCoh_aCoh.psc2static.data(:,jj),Y_AUC_G.InCoh_aInCoh.psc2static.data(:,jj));
+   [TTestRes(3,jj),TTestRes(4,jj)] = ttest(Y_AUC_G.InCoh_aCoh.psc.data(:,jj),Y_AUC_G.InCoh_aInCoh.psc.data(:,jj));
    
    TTestRes(2,jj) = TTestRes(2,jj) * nComp;
-   TTestRes(1,jj) = TTestRes(2,jj) < alpha;
+   TTestRes(1,jj) = round(TTestRes(2,jj),3) <= alpha;
    TTestRes(4,jj) = TTestRes(4,jj) * nComp;
-   TTestRes(3,jj) = TTestRes(4,jj) < alpha;
+   TTestRes(3,jj) = round(TTestRes(4,jj),3) <= alpha;
       
 end
 
