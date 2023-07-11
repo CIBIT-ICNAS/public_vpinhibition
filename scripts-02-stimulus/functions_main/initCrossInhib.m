@@ -51,8 +51,8 @@ S.factor = S.screenX / 1920; % relative to fullHD screen
 S.height = round(674 * S.factor); % Corresponds to 9 deg in visual angle 
 
 % --- Folders
-S.input_path = fullfile(pwd,'input');
-S.output_path = fullfile(pwd,'output');
+S.input_path = fullfile('..','data','input-stimulus');
+S.output_path = fullfile('..','data','output-stimulus');
 %S.outputImages_path = fullfile(pwd,'outputImages');
 
 % --- Open COM Ports for Response box and Trigger
