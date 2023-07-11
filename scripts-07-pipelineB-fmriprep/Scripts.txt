@@ -1,0 +1,23 @@
+$ # Open screen
+screen -L -Logfile vpinhibition-fmriprep-sub20-logfile.txt -S vpin20
+
+# Start
+docker run -ti --rm \
+    -v /DATAPOOL/VPINHIBITION/BIDS-VP-INHIBITION:/data:ro \
+    -v /DATAPOOL/VPINHIBITION/BIDS-VP-INHIBITION/derivatives:/out \
+    -v /SCRATCH/users/alexandresayal/fmriprep-workdir:/work \
+    -v /SCRATCH/software/freesurfer/license.txt:/license \
+    nipreps/fmriprep:21.0.1 \
+    /data /out/fmriprep \
+    participant \
+    -w /work \
+    --fs-license-file /license \
+    --use-syn-sdc \
+    --nprocs 18 \
+    --stop-on-first-crash \
+    --fs-no-reconall \
+    --output-spaces MNI152NLin2009cAsym \
+    --participant-label 20
+
+# Detach screen
+# Ctrl-A e depois D
