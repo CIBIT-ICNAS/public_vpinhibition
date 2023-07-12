@@ -55,7 +55,7 @@ addpath('/SCRATCH/software/toolboxes/nifti-tools')
 addpath(genpath('/SCRATCH/software/toolboxes/neuroelf-matlab/'))
 
 %% Folders
-bidsFolder     = '/DATAPOOL/VPINHIBITION/BIDS-VP-INHIBITION';
+bidsFolder     = '/remote_datastore01/alexandresayal/BIDS-VP-INHIBITION';
 derivFolder    = fullfile(bidsFolder,'derivatives');
 fmriPrepFolder = fullfile(bidsFolder,'derivatives','fmriprep');
 codeFolder     = pwd;
@@ -82,9 +82,9 @@ if system('flirt -version')
 end
 
 % PhysIO version
-if ~strcmp(tapas_physio_version,'R2021a-v8.0.1')
-    error('Double-check PhysIO version in path.')
-end
+% if ~strcmp(tapas_physio_version,'R2021a-v8.0.1')
+%     error('Double-check PhysIO version in path.')
+% end
 
 %% MATLAB Thread management
 maxNumCompThreads(20)

@@ -48,27 +48,29 @@ matlabbatch{3}.spm.stats.con.consess{3}.tcon.sessrep = 'replsc';
 matlabbatch{3}.spm.stats.con.consess{4}.tcon.name = 'Coherent+Incoherent+NonAdapt > Static';
 matlabbatch{3}.spm.stats.con.consess{4}.tcon.weights = [0 0 0 1 0 0 0 0 1 0 1 0 -3];
 matlabbatch{3}.spm.stats.con.consess{4}.tcon.sessrep = 'replsc';
-matlabbatch{3}.spm.stats.con.consess{5}.fcon.name = 'Effects of interest';
-matlabbatch{3}.spm.stats.con.consess{5}.fcon.weights = eye(13);
-matlabbatch{3}.spm.stats.con.consess{5}.fcon.sessrep = 'replsc';
-matlabbatch{3}.spm.stats.con.consess{6}.tcon.name = 'Coh_aCoh > Coherent';
-matlabbatch{3}.spm.stats.con.consess{6}.tcon.weights = [1 0 0 -1 0 0 0 0 0 0 0 0 0];
+matlabbatch{3}.spm.stats.con.consess{5}.tcon.name = 'Coh_aCoh > Coherent';
+matlabbatch{3}.spm.stats.con.consess{5}.tcon.weights = [1 0 0 -1 0 0 0 0 0 0 0 0 0];
+matlabbatch{3}.spm.stats.con.consess{5}.tcon.sessrep = 'replsc';
+matlabbatch{3}.spm.stats.con.consess{6}.tcon.name = 'InCoh_aCoh > Coherent';
+matlabbatch{3}.spm.stats.con.consess{6}.tcon.weights = [0 0 0 -1 0 1 0 0 0 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{6}.tcon.sessrep = 'replsc';
-matlabbatch{3}.spm.stats.con.consess{7}.tcon.name = 'InCoh_aCoh > Coherent';
-matlabbatch{3}.spm.stats.con.consess{7}.tcon.weights = [0 0 0 -1 0 1 0 0 0 0 0 0 0];
+matlabbatch{3}.spm.stats.con.consess{7}.tcon.name = 'Coh_aInCoh > Incoherent';
+matlabbatch{3}.spm.stats.con.consess{7}.tcon.weights = [0 1 0 0 0 0 0 0 -1 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{7}.tcon.sessrep = 'replsc';
-matlabbatch{3}.spm.stats.con.consess{8}.tcon.name = 'Coh_aInCoh > Incoherent';
-matlabbatch{3}.spm.stats.con.consess{8}.tcon.weights = [0 1 0 0 0 0 0 0 -1 0 0 0 0];
+matlabbatch{3}.spm.stats.con.consess{8}.tcon.name = 'InCoh_aInCoh > Incoherent';
+matlabbatch{3}.spm.stats.con.consess{8}.tcon.weights = [0 0 0 0 0 0 1 0 -1 0 0 0 0];
 matlabbatch{3}.spm.stats.con.consess{8}.tcon.sessrep = 'replsc';
-matlabbatch{3}.spm.stats.con.consess{9}.tcon.name = 'InCoh_aInCoh > Incoherent';
-matlabbatch{3}.spm.stats.con.consess{9}.tcon.weights = [0 0 0 0 0 0 1 0 -1 0 0 0 0];
+matlabbatch{3}.spm.stats.con.consess{9}.tcon.name = 'Coh_aNA > NonAdapt';
+matlabbatch{3}.spm.stats.con.consess{9}.tcon.weights = [0 0 1 0 0 0 0 0 0 0 -1 0 0];
 matlabbatch{3}.spm.stats.con.consess{9}.tcon.sessrep = 'replsc';
-matlabbatch{3}.spm.stats.con.consess{10}.tcon.name = 'Coh_aNA > NonAdapt';
-matlabbatch{3}.spm.stats.con.consess{10}.tcon.weights = [0 0 1 0 0 0 0 0 0 0 -1 0 0];
+matlabbatch{3}.spm.stats.con.consess{10}.tcon.name = 'InCoh_aNA > NonAdapt';
+matlabbatch{3}.spm.stats.con.consess{10}.tcon.weights = [0 0 0 0 0 0 0 1 0 0 -1 0 0];
 matlabbatch{3}.spm.stats.con.consess{10}.tcon.sessrep = 'replsc';
-matlabbatch{3}.spm.stats.con.consess{11}.tcon.name = 'InCoh_aNA > NonAdapt';
-matlabbatch{3}.spm.stats.con.consess{11}.tcon.weights = [0 0 0 0 0 0 0 1 0 0 -1 0 0];
-matlabbatch{3}.spm.stats.con.consess{11}.tcon.sessrep = 'replsc';
+
+matlabbatch{3}.spm.stats.con.consess{11}.fcon.name = 'Effects of interest';
+matlabbatch{3}.spm.stats.con.consess{11}.fcon.weights = eye(13);
+matlabbatch{3}.spm.stats.con.consess{11}.fcon.sessrep = 'replsc';
+
 matlabbatch{3}.spm.stats.con.delete = 1;
 
 % RUN

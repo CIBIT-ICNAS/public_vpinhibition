@@ -1,7 +1,7 @@
 clear,clc
 
 %% Folders
-bidsFolder     = '/DATAPOOL/VPINHIBITION/BIDS-VP-INHIBITION';
+bidsFolder     = '/remote_datastore01/alexandresayal/BIDS-VP-INHIBITION';
 derivFolder    = fullfile(bidsFolder,'derivatives');
 
 %% Extract Subject List from BIDS
