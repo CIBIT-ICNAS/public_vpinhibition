@@ -38,7 +38,7 @@ load('TimeSeries_PeakCoordinates.mat')
 %% Define hemodynamic delay
 % In this case, SPM already compensates for the lag??
 hemoDelay = 0; % the TR is 1 second, so I define 4 volumes as an estimate for the hemodynamic delay
-hemoDelayBaseline = 4;
+hemoDelayBaseline = 3;
 
 %% Fetch baseline indexes
 % I know that all runs have the same trial structure, so the 'Static'
@@ -56,15 +56,15 @@ baselineVols = t1 + t2 + hemoDelayBaseline;
 %% Calculate Percent Signal Change to Baseline
 PSC = struct();
 
-PSC.leftMT = (TC.leftMT - mean(TC.leftMT(:,:,baselineVols) , 3) )  ./ std(TC.leftMT(:,:,baselineVols), [], 3);
-PSC.rightMT = (TC.rightMT - mean(TC.rightMT(:,:,baselineVols) , 3)  ) ./ std(TC.rightMT(:,:,baselineVols), [], 3);
-PSC.leftSPL = (TC.leftSPL - mean(TC.leftSPL(:,:,baselineVols) , 3) )  ./ std(TC.leftSPL(:,:,baselineVols), [], 3);
-PSC.rightSPL = (TC.rightSPL - mean(TC.rightSPL(:,:,baselineVols) , 3)  ) ./ std(TC.rightSPL(:,:,baselineVols), [], 3);
+%PSC.leftMT = (TC.leftMT - mean(TC.leftMT(:,:,baselineVols) , 3) )  ./ std(TC.leftMT(:,:,baselineVols), [], 3);
+%PSC.rightMT = (TC.rightMT - mean(TC.rightMT(:,:,baselineVols) , 3)  ) ./ std(TC.rightMT(:,:,baselineVols), [], 3);
+%PSC.leftSPL = (TC.leftSPL - mean(TC.leftSPL(:,:,baselineVols) , 3) )  ./ std(TC.leftSPL(:,:,baselineVols), [], 3);
+%PSC.rightSPL = (TC.rightSPL - mean(TC.rightSPL(:,:,baselineVols) , 3)  ) ./ std(TC.rightSPL(:,:,baselineVols), [], 3);
 
-%PSC.leftMT = TC.leftMT;
-%PSC.rightMT = TC.rightMT;
-%PSC.leftSPL = TC.leftSPL;
-%PSC.rightSPL = TC.rightSPL;
+PSC.leftMT = TC.leftMT;
+PSC.rightMT = TC.rightMT;
+PSC.leftSPL = TC.leftSPL;
+PSC.rightSPL = TC.rightSPL;
 
 %% Fetch indexes for all trial types
 trialIndexes = struct();
@@ -157,7 +157,7 @@ end
 
 hold off
 xx = [xvector(1)-1 xvector(end)+1];
-yy = [-1 ceil(absMax+0.5)];
+yy = [-2 ceil(absMax+0.5)];
 xlim(xx); ylim(yy);
 xlabel('Time (volumes)')
 ylabel({'BOLD signal change (%)'})
@@ -201,7 +201,7 @@ end
 
 hold off
 xx = [xvector(1)-1 xvector(end)+1];
-yy = [-1 ceil(absMax+0.5)];
+yy = [-2 ceil(absMax+0.5)];
 xlim(xx); ylim(yy);
 xlabel('Time (volumes)')
 ylabel({'BOLD signal change (%)'})
@@ -224,12 +224,50 @@ s2.FontSize = 14;
 % ------------------------------------------------------------------------%
 % ------------------------------------------------------------------------%
 
+%% Estimate test window and Statistical tests
+%toPlotMean = zeros(8,6);
+%toPlotSem = zeros(8,6);
+toTestMean = struct();
+
+for tt = 1:6
+    
+    auxMean = squeeze(mean(ERA.bilateralMT.(trialTypes{tt}),2));
+    
+    auxMean = auxMean(~isnan(auxMean(:,1)),:); % remove NaN of one subject
+    
+    toTestMean.(trialTypes{tt}) = auxMean(:,x_auc) - auxMean(:,x_auc(1));
+    
+end
+
+nComb = 3;
+
+p12 = zeros(1,8);
+h12 = zeros(1,8);
+p34 = zeros(1,8);
+h34 = zeros(1,8);
+
+for jj = 1:8
+    
+    [~,p12aux] = ttest(toTestMean.Coh_aInCoh(:,jj),toTestMean.Coh_aCoh(:,jj));
+
+    p12(jj) = p12aux * nComb;
+    h12(jj) = p12(jj) <= 0.05;
+    
+    [~,p34aux] = ttest(toTestMean.InCoh_aCoh(:,jj),toTestMean.InCoh_aInCoh(:,jj));
+
+    p34(jj) = p34aux * nComb;
+    h34(jj) = p34(jj) <= 0.05;
+    
+end
+
 %% Figure 2 - Bilateral hMT+
+delay_tc = 3;
+
 figure('position',[150 150 1200 450])
 trialLabels = {'Coherent \rightarrow Coherent';'Incoherent \rightarrow Coherent';'Non-adapting \rightarrow Coherent';'Coherent \rightarrow Incoherent';'Incoherent \rightarrow Incoherent';'Non-adapting \rightarrow Incoherent'};
 clrMap = lines;
 auxclrmap = [2 1 3]; % to match the color of 'opposite' trials
-x_auc = 15:22; % 1 before + test block + 1 after
+x_auc = (15:22) + delay_tc; % 1 before + test block + 1 after
 xvector = 0:length(x_auc)-1;
 xx = [-1 length(x_auc)];
 yy = [-1 1];
@@ -244,6 +282,7 @@ line(xx,[0 0],'LineStyle',':','Color','k')
 hold on
 
 for tt = [1 2 3]
+    
     toPlotMean = mean(mean(ERA.bilateralMT.(trialTypes{tt}),2),1,'omitnan');
     toPlotSem = std(mean(ERA.bilateralMT.(trialTypes{tt}),2),1,'omitnan') / sqrt(nSubjects);
     
@@ -257,12 +296,13 @@ end
 
 hold on
 
-%plot(find(TTestRes(1,:))-1, 0.55*ones(1,length(find(TTestRes(1,:)))),'*','Color','k','LineWidth',1,'MarkerSize',8)
+h12_x = find(h12);
+plot(h12_x-1, 0.55*ones(1,length(h12_x)),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
 hold off
 
 xlim(xx), ylim(yy)
-xticks(xvector)
+xticks(xvector), xticklabels(x_auc)
 yticks(yvector)
 legend([e(1).mainLine e(2).mainLine e(3).mainLine],trialLabels(1:3),'FontSize',14,'Location','Southwest')
 box on
@@ -293,12 +333,13 @@ end
 
 hold on
 
-% plot(find(TTestRes(3,:))-1,0.55*ones(1,length(find(TTestRes(3,:)))),'*','Color','k','LineWidth',1,'MarkerSize',8)
+h34_x = find(h34);
+plot(h34_x-1, 0.55*ones(1,length(h34_x)),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
 hold off
 
 xlim(xx), ylim(yy)
-xticks(xvector)
+xticks(xvector), xticklabels(x_auc)
 yticks(yvector)
 legend([e(5).mainLine e(4).mainLine e(6).mainLine],trialLabels([5 4 6]),'FontSize',14,'Location','southwest')
 box on
