@@ -28,7 +28,7 @@
 addpath('/SCRATCH/software/toolboxes/spm12')
 
 %% Folders
-bidsFolder     = '/DATAPOOL/VPINHIBITION/BIDS-VP-INHIBITION';
+bidsFolder     = '/remote_datastore01/alexandresayal/BIDS-VP-INHIBITION';
 derivFolder    = fullfile(bidsFolder,'derivatives');
 codeFolder     = pwd;
 
@@ -90,7 +90,7 @@ for ss = 1:nSubjects % iterate on the subjects
             
             %% leftMT
             matlabbatch{1}.spm.util.voi.spmmat = {fullfile(derivFolder,'spm12', subjectList{ss}, ['model_' taskList{tt} '_MNI152NLin2009cAsym'],'SPM.mat')};
-            matlabbatch{1}.spm.util.voi.adjust = 5; % index of F-contrast with the effects of interest (all other will be regressed-out from the signal)
+            matlabbatch{1}.spm.util.voi.adjust = 11; % index of F-contrast with the effects of interest (all other will be regressed-out from the signal)
             matlabbatch{1}.spm.util.voi.session = 1;
             matlabbatch{1}.spm.util.voi.name = sprintf('%s_run-%i', roiName, tt);
             
