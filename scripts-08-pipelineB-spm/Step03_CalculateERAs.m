@@ -26,6 +26,8 @@
 
 clear,clc
 
+outputFolder = fullfile('..','data','expC-fmriprep-images');
+
 %% Load packages
 addpath('/SCRATCH/software/toolboxes/shadedErrorBar/')
 
@@ -224,10 +226,16 @@ s2.FontSize = 14;
 % ------------------------------------------------------------------------%
 % ------------------------------------------------------------------------%
 
+%% Export fig1
+print(fig1,fullfile(outputFolder,sprintf('Figures_fmriprep_1_psc.png')),'-dpng')
+print(fig1,fullfile(outputFolder,sprintf('Figures_fmriprep_1_psc.svg')),'-dsvg')
+
 %% Estimate test window and Statistical tests
 %toPlotMean = zeros(8,6);
 %toPlotSem = zeros(8,6);
 toTestMean = struct();
+delay_tc = 3;
+x_auc = (15:22) + delay_tc; % 1 before + test block + 1 after
 
 for tt = 1:6
     
@@ -261,16 +269,14 @@ for jj = 1:8
 end
 
 %% Figure 2 - Bilateral hMT+
-delay_tc = 3;
-
-figure('position',[150 150 1200 450])
+fig2 = figure('position',[150 150 1200 450]);
 trialLabels = {'Coherent \rightarrow Coherent';'Incoherent \rightarrow Coherent';'Non-adapting \rightarrow Coherent';'Coherent \rightarrow Incoherent';'Incoherent \rightarrow Incoherent';'Non-adapting \rightarrow Incoherent'};
 clrMap = lines;
 auxclrmap = [2 1 3]; % to match the color of 'opposite' trials
-x_auc = (15:22) + delay_tc; % 1 before + test block + 1 after
+
 xvector = 0:length(x_auc)-1;
 xx = [-1 length(x_auc)];
-yy = [-1 1];
+yy = [-0.8 0.8];
 yvector = sort([yy(1):0.2:yy(2)]);
 lwidth = 1.5;
 
@@ -347,99 +353,9 @@ xlabel('Time (volumes)','FontSize',12)
 ylabel({'BOLD signal change (%)'},'FontSize',12)
 s4.FontSize = 15;
 
-%% Figure 3 - Bilateral SPL
-fig1 = figure('Name','Group ERA','Position',[100 100 1100 900]);
-xvector = -2:27;
-clrMap = lines;
-trialLabels = {'Coherent \rightarrow Coherent';'Incoherent \rightarrow Coherent';'Non-adapting \rightarrow Coherent';'Coherent \rightarrow Incoherent';'Incoherent \rightarrow Incoherent';'Non-adapting \rightarrow Incoherent'};
-% ------------------------------------------------------------------------%
-s1=subplot(2,1,1);
-absMax = 0;
-for tt = [1 2 3]
-
-    toPlotMean = mean(mean(ERA.bilateralSPL.(trialTypes{tt}),2),1,'omitnan');
-    toPlotSem = std(mean(ERA.bilateralSPL.(trialTypes{tt}),2),1,'omitnan') / sqrt(nSubjects);
-    
-    shadedErrorBar(xvector,...
-        toPlotMean,...
-        toPlotSem,...
-        'lineprops',{'.-','Color',clrMap(tt,:),'LineWidth',1.5,'MarkerSize',10});
-    
-    if max(toPlotMean+toPlotSem) > absMax
-        absMax = max(toPlotMean+toPlotSem);
-    end
-    
-    hold on    
-end
-
-hold off
-xx = [xvector(1)-1 xvector(end)+1];
-yy = [-1 ceil(absMax+0.5)];
-xlim(xx); ylim(yy);
-xlabel('Time (volumes)')
-ylabel({'BOLD signal change (%)'})
-
-xticks([1 6 12 13 18 19 21 22 24])
-
-line(xx,zeros(length(xx),1),'LineStyle',':','Color','k')
-
-line([0.5 0.5],yy,'LineStyle','--','Color','k')
-line([12.5 12.5],yy,'LineStyle','--','Color','k')
-line([18.5 18.5],yy,'LineStyle','--','Color','k')
-line([21.5 21.5],yy,'LineStyle','--','Color','k')
-line([24.5 24.5],yy,'LineStyle','--','Color','k')
-
-text(6,yy(2)-0.4,'First motion period','HorizontalAlignment','center','FontSize',14)
-text(15.5,yy(2)-0.4,{'Test with','Coherent motion'},'HorizontalAlignment','center','FontSize',14)
-
-legend(trialLabels([1 2 3]),'fontSize',14)
-s1.FontSize = 14;
-% ------------------------------------------------------------------------%
-% ------------------------------------------------------------------------%
-s2=subplot(2,1,2);
-absMax = 0;
-auxclrmap = [2 1 3]; % to match the color of 'opposite' trials
-for tt = [5 4 6]
-
-    toPlotMean = mean(mean(ERA.bilateralSPL.(trialTypes{tt}),2),1,'omitnan');
-    toPlotSem = std(mean(ERA.bilateralSPL.(trialTypes{tt}),2),1,'omitnan') / sqrt(nSubjects);
-    
-    shadedErrorBar(xvector,...
-        toPlotMean,...
-        toPlotSem,...
-        'lineprops',{'.-','Color',clrMap(auxclrmap(tt-3),:),'LineWidth',1.5,'MarkerSize',10});
-    
-    if max(toPlotMean+toPlotSem) > absMax
-        absMax = max(toPlotMean+toPlotSem);
-    end
-    
-    hold on    
-end
-
-hold off
-xx = [xvector(1)-1 xvector(end)+1];
-yy = [-1 ceil(absMax+0.5)];
-xlim(xx); ylim(yy);
-xlabel('Time (volumes)')
-ylabel({'BOLD signal change (%)'})
-
-xticks([1 6 12 13 18 19 21 22 24])
-
-line(xx,zeros(length(xx),1),'LineStyle',':','Color','k')
-
-line([0.5 0.5],yy,'LineStyle','--','Color','k')
-line([12.5 12.5],yy,'LineStyle','--','Color','k')
-line([18.5 18.5],yy,'LineStyle','--','Color','k')
-line([21.5 21.5],yy,'LineStyle','--','Color','k')
-line([24.5 24.5],yy,'LineStyle','--','Color','k')
-
-text(6,yy(2)-0.4,'First motion period','HorizontalAlignment','center','FontSize',14)
-text(15.5,yy(2)-0.4,{'Test with','Incoherent motion'},'HorizontalAlignment','center','FontSize',14)
-
-legend(trialLabels([5 4 6]),'fontSize',14)
-s2.FontSize = 14;
-% ------------------------------------------------------------------------%
-% ------------------------------------------------------------------------%
+%% Export fig2
+print(fig2,fullfile(outputFolder,sprintf('Figures_fmriprep_2_psc.png')),'-dpng')
+print(fig2,fullfile(outputFolder,sprintf('Figures_fmriprep_2_psc.svg')),'-dsvg')
 
 %% SAVE
 save('ERA-data.mat')
