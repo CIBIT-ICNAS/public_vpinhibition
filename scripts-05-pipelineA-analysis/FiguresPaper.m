@@ -110,6 +110,7 @@ s2.FontSize = 14;
 
 %% Export fig
 print(fig1,fullfile(outputFolder,sprintf('FiguresPaper_1_psc.png')),'-dpng')
+print(fig1,fullfile(outputFolder,sprintf('FiguresPaper_1_psc.svg')),'-dsvg')
 
 %% Figure 11 - psc2static
 fig11 = figure('Name','Group ERA','Position',[100 100 1100 900]);
@@ -276,7 +277,7 @@ x_auc = (15:22) + delay_tc; % 1 before + test block + 1 after
 xvector = 0:length(x_auc)-1;
 xvectorlabel = 15:22;
 xx = [-1 length(x_auc)];
-yy = [-0.5 0.7];
+yy = [-0.5 0.5];
 yvector = sort([yy(1):0.2:yy(2) 0]);
 lwidth = 1.5;
 
@@ -293,7 +294,7 @@ e3 = shadedErrorBar(xvector,Y_AUC_G.Coh_aNA.psc.stats.mean,Y_AUC_G.Coh_aNA.psc.s
 
 hold on
 
-plot(find(TTestRes(1,:))-1, 0.55*ones(1,length(find(TTestRes(1,:)))),'*','Color','k','LineWidth',1,'MarkerSize',8)
+plot(find(TTestRes(1,:))-1, 0.4*ones(1,length(find(TTestRes(1,:)))),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
 hold off
 
@@ -320,7 +321,7 @@ e3 = shadedErrorBar(xvector,Y_AUC_G.InCoh_aNA.psc.stats.mean,Y_AUC_G.InCoh_aNA.p
 
 hold on
 
-plot(find(TTestRes(3,:))-1,0.55*ones(1,length(find(TTestRes(3,:)))),'*','Color','k','LineWidth',1,'MarkerSize',8)
+plot(find(TTestRes(3,:))-1,0.4*ones(1,length(find(TTestRes(3,:)))),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
 hold off
 
@@ -335,3 +336,4 @@ s4.FontSize = 15;
 
 %% Export fig
 print(fig22,fullfile(outputFolder,sprintf('FiguresPaper_2_psc.png')),'-dpng')
+print(fig22,fullfile(outputFolder,sprintf('FiguresPaper_2_psc.svg')),'-dsvg')
