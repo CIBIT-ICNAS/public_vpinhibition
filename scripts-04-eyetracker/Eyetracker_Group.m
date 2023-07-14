@@ -15,7 +15,6 @@ nRuns = 6;
 % --- I/O Folders
 inputFolder = fullfile('..','data','expC-raw-eyetracker');
 outputFolder = fullfile('..','data','expC-eyetracker');
-%datasetConfigs.path = 'D:\DATA_VP_Inhibition_Eyetracker';
 
 % --- Initialise matrix for fixation percentage
 Fixation = zeros(nSubjects,1);
@@ -27,6 +26,7 @@ centerX = 1920/2;
 centerY = 1080/2;
 devX = angle2pix(156,70,centerX*2,2.5); % dist, width, width in px, v angle
 devY = angle2pix(156,70,centerY*2,2.5); % dist, width, width in px, v angle
+fs = 1000; % sampling frequency of the eyetracker system in Hz
 
 % --- Counter for excluded runs
 excluded = 0;
@@ -36,7 +36,6 @@ excluded = 0;
 for s = 1:nSubjects
     
     auxDir = dir(fullfile(inputFolder,subjectsList{s},'*.edf'));
-%     auxDir = auxDir(3:end);
             
     auxArray = zeros(length(auxDir),1);
 
@@ -47,10 +46,21 @@ for s = 1:nSubjects
         myDataInfo = Edf2Mat(fname); % Convert edf to mat
         
         auxDur = myDataInfo.Events.Efix.duration; % fixation durations
+
+        % run duration
         runDur = (myDataInfo.Events.End.time-myDataInfo.Events.Start.time);
-        FixationRun(s,i) = sum(auxDur) / runDur;
+        runDur_expected = 374*fs;
+        extra_timepoints = runDur - runDur_expected;
+
+        % exclude fixation events before the start of the MRI acquisition
+        if any(myDataInfo.Events.Efix.start < extra_timepoints)
+            auxDur(myDataInfo.Events.Efix.start < extra_timepoints) = 0;
+            warning('excluding some events before the start')
+        end
+
+        FixationRun(s,i) = sum(auxDur) / runDur_expected;
         
-        if (sum(auxDur) / runDur) < 0.75 % exclude runs with less than 75% of fixation
+        if FixationRun(s,i) < 0.75 % exclude runs with less than 75% of fixation
             auxArray(i) = NaN;
             excluded = excluded + 1;
         else           
@@ -64,7 +74,7 @@ for s = 1:nSubjects
             fixInt = (posX < centerX + devX) & (posX > centerX - devX) & (posY < centerY + devY) & (posY > centerY - devY) ;
 
             % calculate fixation duration / total duration and save
-            auxArray(i) = sum(auxDur(fixInt)) / runDur;
+            auxArray(i) = sum(auxDur(fixInt)) / runDur_expected;
             FixationRun_ROI(s,i) = auxArray(i);
         end
         
@@ -82,6 +92,7 @@ end
 inc = Fixation>0.5;
 
 %% Print results
+% Fixation percentage: M = 0.83 , SD = 0.11 
 fprintf('Fixation percentage: M = %.2f , SD = %.2f \n',nanmean(Fixation(inc)),nanstd(Fixation(inc)));
 
 %% Export data
