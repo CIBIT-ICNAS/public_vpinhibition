@@ -498,5 +498,21 @@ for jj = 1:length(conds2fit)
 
 end
 
+%% Slope Comparison
+x1 = x;
+x2 = x;
+n1 = 20;
+n2 = 20;
+
+y1 = Y_AUC_G.Coh_aInCoh.psc.stats.mean(1:4);
+y2 = Y_AUC_G.Coh_aNA.psc.stats.mean(1:4);
+
+[t,p] = slopeComparison(x1,y1,n1,x2,y2,n2);
+
+y1 = Y_AUC_G.InCoh_aCoh.psc.stats.mean(1:4);
+y2 = Y_AUC_G.InCoh_aNA.psc.stats.mean(1:4);
+
+[t,p] = slopeComparison(x1,y1,n1,x2,y2,n2);
+
 %% Export workspace
 save(fullfile(ioFolder,sprintf('GroupERA_N%i_BilateralMT.mat',N)),'ERA_G','Y_AUC_G','N','TTestRes','Tukeys','AN','FITres','nTrialVols','trialTestTps','delay_tc')
