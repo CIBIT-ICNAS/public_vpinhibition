@@ -12,6 +12,8 @@
 
 clear,clc,close all
 
+addpath(fullfile('..','tools','suptitle'))
+
 %% Initialize stuff
 
 % --- I/O Folders
@@ -434,11 +436,67 @@ for jj = 1:8
    [TTestRes(3,jj),TTestRes(4,jj)] = ttest(Y_AUC_G.InCoh_aCoh.psc.data(:,jj),Y_AUC_G.InCoh_aInCoh.psc.data(:,jj));
    
    TTestRes(2,jj) = TTestRes(2,jj) * nComp;
-   TTestRes(1,jj) = round(TTestRes(2,jj),3) <= alpha;
+   TTestRes(1,jj) = round(TTestRes(2,jj),2) <= alpha;
    TTestRes(4,jj) = TTestRes(4,jj) * nComp;
-   TTestRes(3,jj) = round(TTestRes(4,jj),3) <= alpha;
+   TTestRes(3,jj) = round(TTestRes(4,jj),2) <= alpha;
       
 end
 
+%% ANOVA + Multiple comparison test (tukey's)
+
+AN = zeros(4,8); % F and p x 2 in rows, 8 points as columns
+Tukeys = zeros(4,8); % h and p values x 2, 8 points as columns
+
+for jj = 1:8
+
+    [p1,tbl1,stats1] = anova1([Y_AUC_G.Coh_aCoh.psc.data(:,jj) Y_AUC_G.Coh_aInCoh.psc.data(:,jj) Y_AUC_G.Coh_aNA.psc.data(:,jj)],{'Coh_aCoh','Coh_aInCoh','Coh_aNA'});
+
+    f1 = tbl1{2,5};
+
+    [c1,~,~,gnames1] = multcompare(stats1);
+    % Columns 1 and 2 contain the indices of the two samples being compared.
+    % Column 3 contains the lower confidence interval, column 4 contains the estimate, and column 5 contains the upper confidence interval.
+    % Column 6 contains the p-value for the hypothesis test that the corresponding mean difference is not equal to 0.
+
+    [p2,tbl2,stats2] = anova1([Y_AUC_G.InCoh_aCoh.psc.data(:,jj) Y_AUC_G.InCoh_aInCoh.psc.data(:,jj) Y_AUC_G.InCoh_aNA.psc.data(:,jj)],{'InCoh_aCoh','InCoh_aInCoh','InCoh_aNA'});
+
+    f2 = tbl2{2,5};
+
+    [c2,~,~,gnames2] = multcompare(stats2);
+
+    Tukeys(2,jj) = c1(1,6);
+    Tukeys(1,jj) = round(c1(1,6),2) <= 0.05;
+    Tukeys(4,jj) = c2(1,6);
+    Tukeys(3,jj) = round(c2(1,6),2) <= 0.05;
+
+    AN(1,jj) = f1;
+    AN(2,jj) = p1;
+    AN(3,jj) = f2;
+    AN(4,jj) = p2;
+
+end
+
+%% Slope analysis
+conds2fit = {'Coh_aInCoh','Coh_aNA','InCoh_aCoh','InCoh_aNA'};
+FITres = zeros(4,2);
+x = 0:3;
+
+for jj = 1:length(conds2fit)
+
+    y = Y_AUC_G.(conds2fit{jj}).psc.stats.mean(1:4);
+
+    p = polyfit(x,y,1);
+    
+    yfit = polyval(p,x);
+    yresid = y - yfit;
+    SSresid = sum(yresid.^2);
+    SStotal = (length(y)-1) * var(y);
+    rsq = 1 - SSresid/SStotal;
+
+    FITres(jj,1) = p(1);
+    FITres(jj,2) = rsq;
+
+end
+
 %% Export workspace
-save(fullfile(ioFolder,sprintf('GroupERA_N%i_BilateralMT.mat',N)),'ERA_G','Y_AUC_G','N','TTestRes','nTrialVols','trialTestTps','delay_tc')
+save(fullfile(ioFolder,sprintf('GroupERA_N%i_BilateralMT.mat',N)),'ERA_G','Y_AUC_G','N','TTestRes','Tukeys','AN','FITres','nTrialVols','trialTestTps','delay_tc')
