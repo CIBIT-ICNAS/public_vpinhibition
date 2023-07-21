@@ -445,7 +445,7 @@ end
 %% ANOVA + Multiple comparison test (tukey's)
 
 AN = zeros(4,8); % F and p x 2 in rows, 8 points as columns
-Tukeys = zeros(4,8); % h and p values x 2, 8 points as columns
+Tukeys = zeros(8,8); % h and p values x 4, 8 points as columns
 
 for jj = 1:8
 
@@ -466,8 +466,17 @@ for jj = 1:8
 
     Tukeys(2,jj) = c1(1,6);
     Tukeys(1,jj) = round(c1(1,6),2) <= 0.05;
+
+    % to do aNA !!!
+
     Tukeys(4,jj) = c2(1,6);
     Tukeys(3,jj) = round(c2(1,6),2) <= 0.05;
+
+    Tukeys(8,jj) = c2(2,6);
+    Tukeys(7,jj) = round(c2(2,6),2) <= 0.05;
+
+    Tukeys(6,jj) = c1(2,6);
+    Tukeys(5,jj) = round(c1(2,6),2) <= 0.05;
 
     AN(1,jj) = f1;
     AN(2,jj) = p1;
