@@ -396,7 +396,7 @@ end
 
 TTestResAdaptation = zeros(4,30);
 alpha = 0.05;
-nComp = 3;
+nComp = 6;
 
 for jj = 1:30
     
@@ -427,7 +427,7 @@ end
 
 TTestRes = zeros(4,8);
 alpha = 0.05;
-nComp = 3;
+nComp = 3*6;
 
 for jj = 1:8
     
@@ -442,48 +442,72 @@ for jj = 1:8
       
 end
 
-%% ANOVA + Multiple comparison test (tukey's) - Adaptation period
+%% Calculate point to point t-tests - Extra comparison fixating adaptation period
+% Uncorrected
 
-ANAdaptation = zeros(4,30); % F and p x 2 in rows, 30 points as columns
-TukeysAdaptation = zeros(8,30); % h and p values x 4, 8 points as columns
+TTestResExtra = zeros(6,30);
+alpha = 0.05;
+nComp = 1;
 
 for jj = 1:30
+    
+   [TTestResExtra(1,jj),TTestResExtra(2,jj)] = ttest(ERA_G.BilateralMT.Coh_aCoh.psc.mean(:,jj),ERA_G.BilateralMT.InCoh_aCoh.psc.mean(:,jj));
+   
+   [TTestResExtra(3,jj),TTestResExtra(4,jj)] = ttest(ERA_G.BilateralMT.Coh_aInCoh.psc.mean(:,jj),ERA_G.BilateralMT.InCoh_aInCoh.psc.mean(:,jj));
 
-    [p1,tbl1,stats1] = anova1([ERA_G.BilateralMT.Coh_aCoh.psc.mean(:,jj) ERA_G.BilateralMT.Coh_aInCoh.psc.mean(:,jj) ERA_G.BilateralMT.Coh_aNA.psc.mean(:,jj)],{'Coh_aCoh','Coh_aInCoh','Coh_aNA'});
-
-    f1 = tbl1{2,5};
-
-    [c1,~,~,gnames1] = multcompare(stats1);
-    % Columns 1 and 2 contain the indices of the two samples being compared.
-    % Column 3 contains the lower confidence interval, column 4 contains the estimate, and column 5 contains the upper confidence interval.
-    % Column 6 contains the p-value for the hypothesis test that the corresponding mean difference is not equal to 0.
-
-    [p2,tbl2,stats2] = anova1([ERA_G.BilateralMT.InCoh_aCoh.psc.mean(:,jj) ERA_G.BilateralMT.InCoh_aInCoh.psc.mean(:,jj) ERA_G.BilateralMT.InCoh_aNA.psc.mean(:,jj)],{'InCoh_aCoh','InCoh_aInCoh','InCoh_aNA'});
-
-    f2 = tbl2{2,5};
-
-    [c2,~,~,gnames2] = multcompare(stats2);
-
-    TukeysAdaptation(2,jj) = c1(1,6);
-    TukeysAdaptation(1,jj) = round(c1(1,6),2) <= 0.05;
-
-    % to do aNA !!!
-
-    TukeysAdaptation(4,jj) = c2(1,6);
-    TukeysAdaptation(3,jj) = round(c2(1,6),2) <= 0.05;
-
-    TukeysAdaptation(8,jj) = c2(2,6);
-    TukeysAdaptation(7,jj) = round(c2(2,6),2) <= 0.05;
-
-    TukeysAdaptation(6,jj) = c1(2,6);
-    TukeysAdaptation(5,jj) = round(c1(2,6),2) <= 0.05;
-
-    ANAdaptation(1,jj) = f1;
-    ANAdaptation(2,jj) = p1;
-    ANAdaptation(3,jj) = f2;
-    ANAdaptation(4,jj) = p2;
-
+   [TTestResExtra(5,jj),TTestResExtra(6,jj)] = ttest(ERA_G.BilateralMT.Coh_aNA.psc.mean(:,jj),ERA_G.BilateralMT.InCoh_aNA.psc.mean(:,jj));
+   
+   TTestResExtra(2,jj) = TTestResExtra(2,jj) * nComp;
+   TTestResExtra(1,jj) = round(TTestResExtra(2,jj),2) <= alpha;
+   TTestResExtra(4,jj) = TTestResExtra(4,jj) * nComp;
+   TTestResExtra(3,jj) = round(TTestResExtra(4,jj),2) <= alpha;
+   TTestResExtra(6,jj) = TTestResExtra(6,jj) * nComp;
+   TTestResExtra(5,jj) = round(TTestResExtra(6,jj),2) <= alpha;
+      
 end
+
+%% ANOVA + Multiple comparison test (tukey's) - Adaptation period
+
+% ANAdaptation = zeros(4,30); % F and p x 2 in rows, 30 points as columns
+% TukeysAdaptation = zeros(8,30); % h and p values x 4, 8 points as columns
+% 
+% for jj = 1:30
+% 
+%     [p1,tbl1,stats1] = anova1([ERA_G.BilateralMT.Coh_aCoh.psc.mean(:,jj) ERA_G.BilateralMT.Coh_aInCoh.psc.mean(:,jj) ERA_G.BilateralMT.Coh_aNA.psc.mean(:,jj)],{'Coh_aCoh','Coh_aInCoh','Coh_aNA'});
+% 
+%     f1 = tbl1{2,5};
+% 
+%     [c1,~,~,gnames1] = multcompare(stats1);
+%     % Columns 1 and 2 contain the indices of the two samples being compared.
+%     % Column 3 contains the lower confidence interval, column 4 contains the estimate, and column 5 contains the upper confidence interval.
+%     % Column 6 contains the p-value for the hypothesis test that the corresponding mean difference is not equal to 0.
+% 
+%     [p2,tbl2,stats2] = anova1([ERA_G.BilateralMT.InCoh_aCoh.psc.mean(:,jj) ERA_G.BilateralMT.InCoh_aInCoh.psc.mean(:,jj) ERA_G.BilateralMT.InCoh_aNA.psc.mean(:,jj)],{'InCoh_aCoh','InCoh_aInCoh','InCoh_aNA'});
+% 
+%     f2 = tbl2{2,5};
+% 
+%     [c2,~,~,gnames2] = multcompare(stats2);
+% 
+%     TukeysAdaptation(2,jj) = c1(1,6);
+%     TukeysAdaptation(1,jj) = round(c1(1,6),2) <= 0.05;
+% 
+%     % to do aNA !!!
+% 
+%     TukeysAdaptation(4,jj) = c2(1,6);
+%     TukeysAdaptation(3,jj) = round(c2(1,6),2) <= 0.05;
+% 
+%     TukeysAdaptation(8,jj) = c2(2,6);
+%     TukeysAdaptation(7,jj) = round(c2(2,6),2) <= 0.05;
+% 
+%     TukeysAdaptation(6,jj) = c1(2,6);
+%     TukeysAdaptation(5,jj) = round(c1(2,6),2) <= 0.05;
+% 
+%     ANAdaptation(1,jj) = f1;
+%     ANAdaptation(2,jj) = p1;
+%     ANAdaptation(3,jj) = f2;
+%     ANAdaptation(4,jj) = p2;
+% 
+% end
 
 %% ANOVA + Multiple comparison test (tukey's)
 
@@ -567,4 +591,4 @@ y2 = Y_AUC_G.InCoh_aNA.psc.stats.mean(1:4);
 [t,p] = slopeComparison(x1,y1,n1,x2,y2,n2);
 
 %% Export workspace
-save(fullfile(ioFolder,sprintf('GroupERA_N%i_BilateralMT.mat',N)),'ERA_G','Y_AUC_G','N','TTestRes','Tukeys','TTestResAdaptation','TukeysAdaptation','AN','FITres','nTrialVols','trialTestTps','delay_tc')
+save(fullfile(ioFolder,sprintf('GroupERA_N%i_BilateralMT.mat',N)),'ERA_G','Y_AUC_G','N','TTestRes','TTestResExtra','Tukeys','TTestResAdaptation','AN','FITres','nTrialVols','trialTestTps','delay_tc')

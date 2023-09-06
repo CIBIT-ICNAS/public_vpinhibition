@@ -44,9 +44,9 @@ for tt = [1 2 3]
 end
 
 z = find(TTestResAdaptation(1,:));
-z = z(z > 15 & z < 22);
+z = z(z > 15+3 & z < 22+3);
 
-plot(z-3, 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
+plot(xvector(z), 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
 hold off
 xx = [xvector(1)-1 xvector(end)+1];
@@ -92,9 +92,9 @@ for tt = [5 4 6]
 end
 
 z = find(TTestResAdaptation(3,:));
-z = z(z > 15 & z < 22);
+z = z(z > 15+3 & z < 22+3);
 
-plot(z-3, 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
+plot(xvector(z), 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
 hold off
 xx = [xvector(1)-1 xvector(end)+1];
@@ -127,12 +127,14 @@ print(fig1,fullfile(outputFolder,sprintf('FiguresPaper_1_psc.png')),'-dpng')
 print(fig1,fullfile(outputFolder,sprintf('FiguresPaper_1_psc.svg')),'-dsvg')
 
 %% Figure 2 - psc
+TTestRes = TTestRes(:,1:7);
+
 fig22 = figure('position',[150 150 1200 450]);
 trialLabels = {'Coherent \rightarrow Coherent';'Incoherent \rightarrow Coherent';'Non-adapting \rightarrow Coherent';'Coherent \rightarrow Incoherent';'Incoherent \rightarrow Incoherent';'Non-adapting \rightarrow Incoherent'};
 clrMap = lines;
-x_auc = (15:22) + delay_tc; % 1 before + test block + 1 after
+x_auc = (15:21) + delay_tc; % 1 before + test block + 1 after
 xvector = 0:length(x_auc)-1;
-xvectorlabel = 15:22;
+xvectorlabel = 15:21;
 xx = [-1 length(x_auc)];
 yy = [-0.5 0.5];
 yvector = sort([yy(1):0.2:yy(2) 0]);
@@ -145,9 +147,9 @@ line(xx,[0 0],'LineStyle',':','Color','k')
 
 hold on
 
-e1 = shadedErrorBar(xvector,Y_AUC_G.Coh_aCoh.psc.stats.mean,Y_AUC_G.Coh_aCoh.psc.stats.sem,'lineprops',{'Color',clrMap(1,:),'LineWidth',lwidth,'Marker','.','MarkerSize',20});
-e2 = shadedErrorBar(xvector,Y_AUC_G.Coh_aInCoh.psc.stats.mean,Y_AUC_G.Coh_aInCoh.psc.stats.sem,'lineprops',{'Color',clrMap(2,:),'LineWidth',lwidth,'Marker','.','MarkerSize',20});
-e3 = shadedErrorBar(xvector,Y_AUC_G.Coh_aNA.psc.stats.mean,Y_AUC_G.Coh_aNA.psc.stats.sem,'lineprops',{'Color',clrMap(3,:),'LineWidth',lwidth,'Marker','.','MarkerSize',20});
+e1 = shadedErrorBar(xvector,Y_AUC_G.Coh_aCoh.psc.stats.mean(1:7),Y_AUC_G.Coh_aCoh.psc.stats.sem(1:7),'lineprops',{'Color',clrMap(1,:),'LineWidth',lwidth,'Marker','.','MarkerSize',20});
+e2 = shadedErrorBar(xvector,Y_AUC_G.Coh_aInCoh.psc.stats.mean(1:7),Y_AUC_G.Coh_aInCoh.psc.stats.sem(1:7),'lineprops',{'Color',clrMap(2,:),'LineWidth',lwidth,'Marker','.','MarkerSize',20});
+e3 = shadedErrorBar(xvector,Y_AUC_G.Coh_aNA.psc.stats.mean(1:7),Y_AUC_G.Coh_aNA.psc.stats.sem(1:7),'lineprops',{'Color',clrMap(3,:),'LineWidth',lwidth,'Marker','.','MarkerSize',20});
 
 hold on
 
@@ -172,9 +174,9 @@ line(xx,[0 0],'LineStyle',':','Color','k')
 
 hold on
 
-e1 = shadedErrorBar(xvector,Y_AUC_G.InCoh_aInCoh.psc.stats.mean,Y_AUC_G.InCoh_aInCoh.psc.stats.sem,'lineprops',{'Color',clrMap(1,:),'LineWidth',lwidth,'Marker','.','MarkerSize',20});
-e2 = shadedErrorBar(xvector,Y_AUC_G.InCoh_aCoh.psc.stats.mean,Y_AUC_G.InCoh_aCoh.psc.stats.sem,'lineprops',{'Color',clrMap(2,:),'LineWidth',lwidth,'Marker','.','MarkerSize',20});
-e3 = shadedErrorBar(xvector,Y_AUC_G.InCoh_aNA.psc.stats.mean,Y_AUC_G.InCoh_aNA.psc.stats.sem,'lineprops',{'Color',clrMap(3,:),'LineWidth',lwidth,'Marker','.','MarkerSize',20});
+e1 = shadedErrorBar(xvector,Y_AUC_G.InCoh_aInCoh.psc.stats.mean(1:7),Y_AUC_G.InCoh_aInCoh.psc.stats.sem(1:7),'lineprops',{'Color',clrMap(1,:),'LineWidth',lwidth,'Marker','.','MarkerSize',20});
+e2 = shadedErrorBar(xvector,Y_AUC_G.InCoh_aCoh.psc.stats.mean(1:7),Y_AUC_G.InCoh_aCoh.psc.stats.sem(1:7),'lineprops',{'Color',clrMap(2,:),'LineWidth',lwidth,'Marker','.','MarkerSize',20});
+e3 = shadedErrorBar(xvector,Y_AUC_G.InCoh_aNA.psc.stats.mean(1:7),Y_AUC_G.InCoh_aNA.psc.stats.sem(1:7),'lineprops',{'Color',clrMap(3,:),'LineWidth',lwidth,'Marker','.','MarkerSize',20});
 
 hold on
 
@@ -199,7 +201,7 @@ print(fig22,fullfile(outputFolder,sprintf('FiguresPaper_2_psc.svg')),'-dsvg')
 fig3 = figure('Name','Group ERA','Position',[100 100 900 1100]);
 xvector = -2:nTrialVols-3;
 clrMap = lines;
-clrMapSimple = [clrMap(1,:) ; clrMap(4,:) ; clrMap(1,:) ; clrMap(4,:) ; clrMap(1,:) ; clrMap(4,:)];
+clrMapSimple = [ 0 0 0 ; 0.3 0.3 0.8  ; 0.4 0.4 0; 0.6 0.4 0.2; 0 0 0; 0 0.4 0 ];
 trialLabels = {'Coherent \rightarrow Coherent';'Incoherent \rightarrow Coherent';'Non-adapting \rightarrow Coherent';'Coherent \rightarrow Incoherent';'Incoherent \rightarrow Incoherent';'Non-adapting \rightarrow Incoherent'};
 % ------------------------------------------------------------------------%
 s1=subplot(3,1,1);
@@ -218,10 +220,10 @@ for tt = [1 4]
     hold on    
 end
 
-% z = find(TTestResAdaptation(1,:));
-% z = z(z > 15 & z < 22);
-% 
-% plot(z-3, 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
+z = find(TTestResExtra(1,:));
+z = z(z > 15+3 & z < 22+3);
+
+plot(xvector(z), 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
 hold off
 xx = [xvector(1)-1 xvector(end)+1];
@@ -264,11 +266,11 @@ for tt = [5 2]
     
     hold on    
 end
-% 
-% z = find(TTestResAdaptation(3,:));
-% z = z(z > 15 & z < 22);
-% 
-% plot(z-3, 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
+
+z = find(TTestResExtra(3,:));
+z = z(z > 15+3 & z < 22+3);
+
+plot(xvector(z), 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
 hold off
 xx = [xvector(1)-1 xvector(end)+1];
@@ -311,11 +313,11 @@ for tt = [3 6]
     
     hold on    
 end
-% 
-% z = find(TTestResAdaptation(3,:));
-% z = z(z > 15 & z < 22);
-% 
-% plot(z-3, 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
+
+z = find(TTestResExtra(5,:));
+z = z(z > 15+3 & z < 22+3);
+
+plot(xvector(z), 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
 hold off
 xx = [xvector(1)-1 xvector(end)+1];

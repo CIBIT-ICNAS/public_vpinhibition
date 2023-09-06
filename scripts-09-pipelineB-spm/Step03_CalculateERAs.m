@@ -29,7 +29,8 @@ clear,clc
 outputFolder = fullfile('..','data','expC-fmriprep-images');
 
 %% Load packages
-addpath('/SCRATCH/software/toolboxes/shadedErrorBar/')
+addpath(fullfile('..','tools','shadedErrorBar'))
+%addpath('/SCRATCH/software/toolboxes/shadedErrorBar/')
 
 %% Load data
 % TC is the struct of interest, containing the time-course for all subs,
@@ -38,22 +39,21 @@ addpath('/SCRATCH/software/toolboxes/shadedErrorBar/')
 load('TimeSeries_PeakCoordinates.mat')
 
 %% Define hemodynamic delay
-% In this case, SPM already compensates for the lag??
-hemoDelay = 0; % the TR is 1 second, so I define 4 volumes as an estimate for the hemodynamic delay
-hemoDelayBaseline = 3;
+hemoDelay = 0;
+% hemoDelayBaseline = 3;
 
 %% Fetch baseline indexes
 % I know that all runs have the same trial structure, so the 'Static'
 % conditions aka baseline have the same volumes for all six runs.
 
 %tsvData = importTSVProtocol(fullfile(bidsFolder,'sub-01','ses-01','func','sub-01_ses-01_task-inhib_run-1_events.tsv'));
-tsvData = importTSVProtocol(fullfile(pwd,'tsv','sub-01_ses-01_task-inhib_run-1_events.tsv'));
-
-baselineOnsets = tsvData.onset(tsvData.trial_type == 'Static') + 1; % onsets are zero-based, but we need indexes, which in Matlab are one-based
-
-[t1,t2] = ndgrid(baselineOnsets, 0:5); % I know that the 'Static' duration is 6 volumes
-
-baselineVols = t1 + t2 + hemoDelayBaseline;
+% tsvData = importTSVProtocol(fullfile(pwd,'tsv','sub-01_ses-01_task-inhib_run-1_events.tsv'));
+% 
+% baselineOnsets = tsvData.onset(tsvData.trial_type == 'Static') + 1; % onsets are zero-based, but we need indexes, which in Matlab are one-based
+% 
+% [t1,t2] = ndgrid(baselineOnsets, 0:5); % I know that the 'Static' duration is 6 volumes
+% 
+% baselineVols = t1 + t2 + hemoDelayBaseline;
 
 %% Calculate Percent Signal Change to Baseline
 PSC = struct();
@@ -281,7 +281,7 @@ auxclrmap = [2 1 3]; % to match the color of 'opposite' trials
 xvector = 0:length(x_auc)-1;
 xx = [-1 length(x_auc)];
 yy = [-0.8 0.8];
-yvector = sort([yy(1):0.2:yy(2)]);
+yvector = sort(yy(1):0.2:yy(2));
 lwidth = 1.5;
 
 s1 = subplot(1,2,1);
