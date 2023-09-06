@@ -394,33 +394,33 @@ end
 %% Calculate point to point t-tests in the full curve
 % Bonferroni correction with 3 comparions
 
-% TTestRes = zeros(4,8);
-% alpha = 0.05;
-% nComp = 3;
-% 
-% for jj = 1:30
-%     
-%    [TTestRes(1,jj),TTestRes(2,jj)] = ttest(ERA_G.BilateralMT.Coh_aCoh.psc.mean(:,jj),ERA_G.BilateralMT.Coh_aInCoh.psc.mean(:,jj));
-%    
-%    [TTestRes(3,jj),TTestRes(4,jj)] = ttest(ERA_G.BilateralMT.InCoh_aCoh.psc.mean(:,jj),ERA_G.BilateralMT.InCoh_aInCoh.psc.mean(:,jj));
-% 
-%    [TTestRes(5,jj),TTestRes(6,jj)] = ttest(ERA_G.BilateralMT.Coh_aInCoh.psc.mean(:,jj),ERA_G.BilateralMT.Coh_aNA.psc.mean(:,jj));
-% 
-%    [TTestRes(7,jj),TTestRes(8,jj)] = ttest(ERA_G.BilateralMT.InCoh_aCoh.psc.mean(:,jj),ERA_G.BilateralMT.InCoh_aNA.psc.mean(:,jj));
-%    
-%    TTestRes(2,jj) = TTestRes(2,jj) * nComp;
-%    TTestRes(1,jj) = TTestRes(2,jj) < alpha;
-% 
-%    TTestRes(4,jj) = TTestRes(4,jj) * nComp;
-%    TTestRes(3,jj) = TTestRes(4,jj) < alpha;
-% 
-%    TTestRes(6,jj) = TTestRes(6,jj) * nComp;
-%    TTestRes(5,jj) = TTestRes(6,jj) < alpha;
-% 
-%    TTestRes(8,jj) = TTestRes(8,jj) * nComp;
-%    TTestRes(7,jj) = TTestRes(8,jj) < alpha;
-%       
-% end
+TTestResAdaptation = zeros(4,30);
+alpha = 0.05;
+nComp = 3;
+
+for jj = 1:30
+    
+   [TTestResAdaptation(1,jj),TTestResAdaptation(2,jj)] = ttest(ERA_G.BilateralMT.Coh_aCoh.psc.mean(:,jj),ERA_G.BilateralMT.Coh_aInCoh.psc.mean(:,jj));
+   
+   [TTestResAdaptation(3,jj),TTestResAdaptation(4,jj)] = ttest(ERA_G.BilateralMT.InCoh_aCoh.psc.mean(:,jj),ERA_G.BilateralMT.InCoh_aInCoh.psc.mean(:,jj));
+
+   [TTestResAdaptation(5,jj),TTestResAdaptation(6,jj)] = ttest(ERA_G.BilateralMT.Coh_aInCoh.psc.mean(:,jj),ERA_G.BilateralMT.Coh_aNA.psc.mean(:,jj));
+
+   [TTestResAdaptation(7,jj),TTestResAdaptation(8,jj)] = ttest(ERA_G.BilateralMT.InCoh_aCoh.psc.mean(:,jj),ERA_G.BilateralMT.InCoh_aNA.psc.mean(:,jj));
+   
+   TTestResAdaptation(2,jj) = TTestResAdaptation(2,jj) * nComp;
+   TTestResAdaptation(1,jj) = TTestResAdaptation(2,jj) < alpha;
+
+   TTestResAdaptation(4,jj) = TTestResAdaptation(4,jj) * nComp;
+   TTestResAdaptation(3,jj) = TTestResAdaptation(4,jj) < alpha;
+
+   TTestResAdaptation(6,jj) = TTestResAdaptation(6,jj) * nComp;
+   TTestResAdaptation(5,jj) = TTestResAdaptation(6,jj) < alpha;
+
+   TTestResAdaptation(8,jj) = TTestResAdaptation(8,jj) * nComp;
+   TTestResAdaptation(7,jj) = TTestResAdaptation(8,jj) < alpha;
+      
+end
 
 %% Calculate point to point t-tests
 % Bonferroni correction with 3 comparions
@@ -440,6 +440,49 @@ for jj = 1:8
    TTestRes(4,jj) = TTestRes(4,jj) * nComp;
    TTestRes(3,jj) = round(TTestRes(4,jj),2) <= alpha;
       
+end
+
+%% ANOVA + Multiple comparison test (tukey's) - Adaptation period
+
+ANAdaptation = zeros(4,30); % F and p x 2 in rows, 30 points as columns
+TukeysAdaptation = zeros(8,30); % h and p values x 4, 8 points as columns
+
+for jj = 1:30
+
+    [p1,tbl1,stats1] = anova1([ERA_G.BilateralMT.Coh_aCoh.psc.mean(:,jj) ERA_G.BilateralMT.Coh_aInCoh.psc.mean(:,jj) ERA_G.BilateralMT.Coh_aNA.psc.mean(:,jj)],{'Coh_aCoh','Coh_aInCoh','Coh_aNA'});
+
+    f1 = tbl1{2,5};
+
+    [c1,~,~,gnames1] = multcompare(stats1);
+    % Columns 1 and 2 contain the indices of the two samples being compared.
+    % Column 3 contains the lower confidence interval, column 4 contains the estimate, and column 5 contains the upper confidence interval.
+    % Column 6 contains the p-value for the hypothesis test that the corresponding mean difference is not equal to 0.
+
+    [p2,tbl2,stats2] = anova1([ERA_G.BilateralMT.InCoh_aCoh.psc.mean(:,jj) ERA_G.BilateralMT.InCoh_aInCoh.psc.mean(:,jj) ERA_G.BilateralMT.InCoh_aNA.psc.mean(:,jj)],{'InCoh_aCoh','InCoh_aInCoh','InCoh_aNA'});
+
+    f2 = tbl2{2,5};
+
+    [c2,~,~,gnames2] = multcompare(stats2);
+
+    TukeysAdaptation(2,jj) = c1(1,6);
+    TukeysAdaptation(1,jj) = round(c1(1,6),2) <= 0.05;
+
+    % to do aNA !!!
+
+    TukeysAdaptation(4,jj) = c2(1,6);
+    TukeysAdaptation(3,jj) = round(c2(1,6),2) <= 0.05;
+
+    TukeysAdaptation(8,jj) = c2(2,6);
+    TukeysAdaptation(7,jj) = round(c2(2,6),2) <= 0.05;
+
+    TukeysAdaptation(6,jj) = c1(2,6);
+    TukeysAdaptation(5,jj) = round(c1(2,6),2) <= 0.05;
+
+    ANAdaptation(1,jj) = f1;
+    ANAdaptation(2,jj) = p1;
+    ANAdaptation(3,jj) = f2;
+    ANAdaptation(4,jj) = p2;
+
 end
 
 %% ANOVA + Multiple comparison test (tukey's)
@@ -524,4 +567,4 @@ y2 = Y_AUC_G.InCoh_aNA.psc.stats.mean(1:4);
 [t,p] = slopeComparison(x1,y1,n1,x2,y2,n2);
 
 %% Export workspace
-save(fullfile(ioFolder,sprintf('GroupERA_N%i_BilateralMT.mat',N)),'ERA_G','Y_AUC_G','N','TTestRes','Tukeys','AN','FITres','nTrialVols','trialTestTps','delay_tc')
+save(fullfile(ioFolder,sprintf('GroupERA_N%i_BilateralMT.mat',N)),'ERA_G','Y_AUC_G','N','TTestRes','Tukeys','TTestResAdaptation','TukeysAdaptation','AN','FITres','nTrialVols','trialTestTps','delay_tc')
