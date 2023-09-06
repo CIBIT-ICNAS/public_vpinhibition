@@ -176,8 +176,10 @@ line([24.5 24.5],yy,'LineStyle','--','Color','k')
 
 text(6,yy(2)-0.4,'First motion period','HorizontalAlignment','center','FontSize',14)
 text(15.5,yy(2)-0.4,{'Test with','Coherent motion'},'HorizontalAlignment','center','FontSize',14)
+text(20,  yy(2)-0.4,'MAE','HorizontalAlignment','center','FontSize',14)
+text(23,  yy(2)-0.4,'Report','HorizontalAlignment','center','FontSize',14)
 
-legend(trialLabels([1 2 3]),'fontSize',14)
+legend(trialLabels([1 2 3]),'fontSize',14, 'location','southeast')
 s1.FontSize = 14;
 % ------------------------------------------------------------------------%
 % ------------------------------------------------------------------------%
@@ -220,8 +222,10 @@ line([24.5 24.5],yy,'LineStyle','--','Color','k')
 
 text(6,yy(2)-0.4,'First motion period','HorizontalAlignment','center','FontSize',14)
 text(15.5,yy(2)-0.4,{'Test with','Incoherent motion'},'HorizontalAlignment','center','FontSize',14)
+text(20,  yy(2)-0.4,'MAE','HorizontalAlignment','center','FontSize',14)
+text(23,  yy(2)-0.4,'Report','HorizontalAlignment','center','FontSize',14)
 
-legend(trialLabels([5 4 6]),'fontSize',14)
+legend(trialLabels([1 2 3]),'fontSize',14, 'location','southeast')
 s2.FontSize = 14;
 % ------------------------------------------------------------------------%
 % ------------------------------------------------------------------------%
@@ -281,8 +285,8 @@ yvector = sort([yy(1):0.2:yy(2)]);
 lwidth = 1.5;
 
 s1 = subplot(1,2,1);
-line([0.5 0.5],yy,'LineStyle','--','Color','k')
-line([6.5 6.5],yy,'LineStyle','--','Color','k')
+line([0.5 0.5],yy,'LineStyle',':','Color','k')
+% line([6.5 6.5],yy,'LineStyle','--','Color','k')
 line(xx,[0 0],'LineStyle',':','Color','k')
 
 hold on
@@ -308,7 +312,7 @@ plot(h12_x-1, 0.55*ones(1,length(h12_x)),'*','Color','k','LineWidth',1,'MarkerSi
 hold off
 
 xlim(xx), ylim(yy)
-xticks(xvector), xticklabels(x_auc)
+xticks(xvector), xticklabels(x_auc-delay_tc)
 yticks(yvector)
 legend([e(1).mainLine e(2).mainLine e(3).mainLine],trialLabels(1:3),'FontSize',14,'Location','Southwest')
 box on
@@ -318,8 +322,8 @@ s1.FontSize = 15;
 
 %-------------------------------------------------------
 s4 = subplot(1,2,2);
-line([0.5 0.5],yy,'LineStyle','--','Color','k')
-line([6.5 6.5],yy,'LineStyle','--','Color','k')
+line([0.5 0.5],yy,'LineStyle',':','Color','k')
+% line([6.5 6.5],yy,'LineStyle','--','Color','k')
 line(xx,[0 0],'LineStyle',':','Color','k')
 
 hold on
@@ -345,7 +349,7 @@ plot(h34_x-1, 0.55*ones(1,length(h34_x)),'*','Color','k','LineWidth',1,'MarkerSi
 hold off
 
 xlim(xx), ylim(yy)
-xticks(xvector), xticklabels(x_auc)
+xticks(xvector), xticklabels(x_auc-delay_tc)
 yticks(yvector)
 legend([e(5).mainLine e(4).mainLine e(6).mainLine],trialLabels([5 4 6]),'FontSize',14,'Location','southwest')
 box on
