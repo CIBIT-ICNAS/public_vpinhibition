@@ -44,7 +44,7 @@ for tt = [1 2 3]
 end
 
 z = find(TTestResAdaptation(1,:));
-z = z(z > 15+3 & z < 22+3);
+z = z(z > 15+delay_tc & z < 22+delay_tc);
 
 plot(xvector(z), 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
@@ -92,7 +92,7 @@ for tt = [5 4 6]
 end
 
 z = find(TTestResAdaptation(3,:));
-z = z(z > 15+3 & z < 22+3);
+z = z(z > 15+delay_tc & z < 22+delay_tc);
 
 plot(xvector(z), 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
@@ -127,8 +127,6 @@ print(fig1,fullfile(outputFolder,sprintf('FiguresPaper_1_psc.png')),'-dpng')
 print(fig1,fullfile(outputFolder,sprintf('FiguresPaper_1_psc.svg')),'-dsvg')
 
 %% Figure 2 - psc
-TTestRes = TTestRes(:,1:7);
-
 fig22 = figure('position',[150 150 1200 450]);
 trialLabels = {'Coherent \rightarrow Coherent';'Incoherent \rightarrow Coherent';'Non-adapting \rightarrow Coherent';'Coherent \rightarrow Incoherent';'Incoherent \rightarrow Incoherent';'Non-adapting \rightarrow Incoherent'};
 clrMap = lines;
@@ -153,7 +151,7 @@ e3 = shadedErrorBar(xvector,Y_AUC_G.Coh_aNA.psc.stats.mean(1:7),Y_AUC_G.Coh_aNA.
 
 hold on
 
-plot(find(TTestRes(1,:))-1, 0.4*ones(1,length(find(TTestRes(1,:)))),'*','Color','k','LineWidth',1,'MarkerSize',8)
+plot(find(Tukeys(1,:))-1, 0.4*ones(1,length(find(Tukeys(1,:)))),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
 hold off
 
@@ -180,7 +178,7 @@ e3 = shadedErrorBar(xvector,Y_AUC_G.InCoh_aNA.psc.stats.mean(1:7),Y_AUC_G.InCoh_
 
 hold on
 
-plot(find(TTestRes(3,:))-1,0.4*ones(1,length(find(TTestRes(3,:)))),'*','Color','k','LineWidth',1,'MarkerSize',8)
+plot(find(Tukeys(3,:))-1,0.4*ones(1,length(find(Tukeys(3,:)))),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
 hold off
 
@@ -221,7 +219,7 @@ for tt = [1 4]
 end
 
 z = find(TTestResExtra(1,:));
-z = z(z > 15+3 & z < 22+3);
+z = z(z > 15+delay_tc & z < 22+delay_tc);
 
 plot(xvector(z), 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
@@ -268,7 +266,7 @@ for tt = [5 2]
 end
 
 z = find(TTestResExtra(3,:));
-z = z(z > 15+3 & z < 22+3);
+z = z(z > 15+delay_tc & z < 22+delay_tc);
 
 plot(xvector(z), 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
@@ -315,7 +313,7 @@ for tt = [3 6]
 end
 
 z = find(TTestResExtra(5,:));
-z = z(z > 15+3 & z < 22+3);
+z = z(z > 15+delay_tc & z < 22+delay_tc);
 
 plot(xvector(z), 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
 

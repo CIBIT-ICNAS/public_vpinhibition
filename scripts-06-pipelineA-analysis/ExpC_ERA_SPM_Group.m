@@ -466,55 +466,12 @@ for jj = 1:30
       
 end
 
-%% ANOVA + Multiple comparison test (tukey's) - Adaptation period
-
-% ANAdaptation = zeros(4,30); % F and p x 2 in rows, 30 points as columns
-% TukeysAdaptation = zeros(8,30); % h and p values x 4, 8 points as columns
-% 
-% for jj = 1:30
-% 
-%     [p1,tbl1,stats1] = anova1([ERA_G.BilateralMT.Coh_aCoh.psc.mean(:,jj) ERA_G.BilateralMT.Coh_aInCoh.psc.mean(:,jj) ERA_G.BilateralMT.Coh_aNA.psc.mean(:,jj)],{'Coh_aCoh','Coh_aInCoh','Coh_aNA'});
-% 
-%     f1 = tbl1{2,5};
-% 
-%     [c1,~,~,gnames1] = multcompare(stats1);
-%     % Columns 1 and 2 contain the indices of the two samples being compared.
-%     % Column 3 contains the lower confidence interval, column 4 contains the estimate, and column 5 contains the upper confidence interval.
-%     % Column 6 contains the p-value for the hypothesis test that the corresponding mean difference is not equal to 0.
-% 
-%     [p2,tbl2,stats2] = anova1([ERA_G.BilateralMT.InCoh_aCoh.psc.mean(:,jj) ERA_G.BilateralMT.InCoh_aInCoh.psc.mean(:,jj) ERA_G.BilateralMT.InCoh_aNA.psc.mean(:,jj)],{'InCoh_aCoh','InCoh_aInCoh','InCoh_aNA'});
-% 
-%     f2 = tbl2{2,5};
-% 
-%     [c2,~,~,gnames2] = multcompare(stats2);
-% 
-%     TukeysAdaptation(2,jj) = c1(1,6);
-%     TukeysAdaptation(1,jj) = round(c1(1,6),2) <= 0.05;
-% 
-%     % to do aNA !!!
-% 
-%     TukeysAdaptation(4,jj) = c2(1,6);
-%     TukeysAdaptation(3,jj) = round(c2(1,6),2) <= 0.05;
-% 
-%     TukeysAdaptation(8,jj) = c2(2,6);
-%     TukeysAdaptation(7,jj) = round(c2(2,6),2) <= 0.05;
-% 
-%     TukeysAdaptation(6,jj) = c1(2,6);
-%     TukeysAdaptation(5,jj) = round(c1(2,6),2) <= 0.05;
-% 
-%     ANAdaptation(1,jj) = f1;
-%     ANAdaptation(2,jj) = p1;
-%     ANAdaptation(3,jj) = f2;
-%     ANAdaptation(4,jj) = p2;
-% 
-% end
-
 %% ANOVA + Multiple comparison test (tukey's)
 
-AN = zeros(4,8); % F and p x 2 in rows, 8 points as columns
-Tukeys = zeros(8,8); % h and p values x 4, 8 points as columns
+AN = zeros(4,7); % F and p x 2 in rows, 8 points as columns
+Tukeys = zeros(8,7); % h and p values x 4, 8 points as columns
 
-for jj = 1:8
+for jj = 1:7
 
     [p1,tbl1,stats1] = anova1([Y_AUC_G.Coh_aCoh.psc.data(:,jj) Y_AUC_G.Coh_aInCoh.psc.data(:,jj) Y_AUC_G.Coh_aNA.psc.data(:,jj)],{'Coh_aCoh','Coh_aInCoh','Coh_aNA'});
 
