@@ -40,6 +40,7 @@ load('TimeSeries_PeakCoordinates.mat')
 
 %% Define hemodynamic delay
 hemoDelay = 0;
+delay_tc = 3;
 % hemoDelayBaseline = 3;
 
 %% Fetch baseline indexes
@@ -196,7 +197,7 @@ for tt = [1 2 3]
 end
 
 z = find(TTestResAdaptation(1,:));
-z = z(z > 15+3 & z < 22+3); % limit to the 6 points of the test period
+z = z(z > 15+delay_tc & z < 22+delay_tc); % limit to the 6 points of the test period
 
 plot(xvector(z), 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
@@ -247,7 +248,7 @@ for tt = [5 4 6]
 end
 
 z = find(TTestResAdaptation(3,:));
-z = z(z > 15+3 & z < 22+3); % limit to the 6 points of the test period
+z = z(z > 15+delay_tc & z < 22+delay_tc); % limit to the 6 points of the test period
 
 plot(xvector(z), 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
@@ -289,7 +290,7 @@ toTestMean = struct();
 delay_tc = 3;
 x_auc = (15:21) + delay_tc; % 1 before + test block
 
-for tt = 1:6
+for tt = 1:nTrialTypes
     
     auxMean = squeeze(mean(ERA.bilateralMT.(trialTypes{tt}),2));
     
@@ -299,26 +300,70 @@ for tt = 1:6
     
 end
 
-nComb = 3*6; % 3 conds x 6 data points
+%% ANOVA + Multiple comparison test (tukey's)
 
-p12 = zeros(1,7);
-h12 = zeros(1,7);
-p34 = zeros(1,7);
-h34 = zeros(1,7);
+AN = zeros(4,7); % F and p x 2 in rows, 8 points as columns
+Tukeys = zeros(8,7); % h and p values x 4, 8 points as columns
 
 for jj = 1:7
-    
-    [~,p12aux] = ttest(toTestMean.Coh_aInCoh(:,jj),toTestMean.Coh_aCoh(:,jj));
 
-    p12(jj) = p12aux * nComb;
-    h12(jj) = round(p12(jj),2) <= 0.05;
-    
-    [~,p34aux] = ttest(toTestMean.InCoh_aCoh(:,jj),toTestMean.InCoh_aInCoh(:,jj));
+    [p1,tbl1,stats1] = anova1([toTestMean.Coh_aCoh(:,jj) toTestMean.Coh_aInCoh(:,jj) toTestMean.Coh_aNA(:,jj)],{'Coh_aCoh','Coh_aInCoh','Coh_aNA'});
 
-    p34(jj) = p34aux * nComb;
-    h34(jj) = round(p34(jj),2) <= 0.05;
-    
+    f1 = tbl1{2,5};
+
+    [c1,~,~,gnames1] = multcompare(stats1);
+    % Columns 1 and 2 contain the indices of the two samples being compared.
+    % Column 3 contains the lower confidence interval, column 4 contains the estimate, and column 5 contains the upper confidence interval.
+    % Column 6 contains the p-value for the hypothesis test that the corresponding mean difference is not equal to 0.
+
+    [p2,tbl2,stats2] = anova1([toTestMean.InCoh_aCoh(:,jj) toTestMean.InCoh_aInCoh(:,jj) toTestMean.InCoh_aNA(:,jj)],{'InCoh_aCoh','InCoh_aInCoh','InCoh_aNA'});
+
+    f2 = tbl2{2,5};
+
+    [c2,~,~,gnames2] = multcompare(stats2);
+
+    Tukeys(2,jj) = c1(1,6);
+    Tukeys(1,jj) = round(c1(1,6),2) <= 0.05;
+
+    % to do aNA !!!
+
+    Tukeys(4,jj) = c2(1,6);
+    Tukeys(3,jj) = round(c2(1,6),2) <= 0.05;
+
+    Tukeys(8,jj) = c2(2,6);
+    Tukeys(7,jj) = round(c2(2,6),2) <= 0.05;
+
+    Tukeys(6,jj) = c1(2,6);
+    Tukeys(5,jj) = round(c1(2,6),2) <= 0.05;
+
+    AN(1,jj) = f1;
+    AN(2,jj) = p1;
+    AN(3,jj) = f2;
+    AN(4,jj) = p2;
+
 end
+
+%%
+% nComb = 3*6; % 3 conds x 6 data points
+% 
+% p12 = zeros(1,7);
+% h12 = zeros(1,7);
+% p34 = zeros(1,7);
+% h34 = zeros(1,7);
+% 
+% for jj = 1:7
+%     
+%     [~,p12aux] = ttest(toTestMean.Coh_aInCoh(:,jj),toTestMean.Coh_aCoh(:,jj));
+% 
+%     p12(jj) = p12aux * nComb;
+%     h12(jj) = round(p12(jj),2) <= 0.05;
+%     
+%     [~,p34aux] = ttest(toTestMean.InCoh_aCoh(:,jj),toTestMean.InCoh_aInCoh(:,jj));
+% 
+%     p34(jj) = p34aux * nComb;
+%     h34(jj) = round(p34(jj),2) <= 0.05;
+%     
+% end
 
 %% Figure 2 - Bilateral hMT+
 fig2 = figure('position',[150 150 1200 450]);
@@ -354,8 +399,7 @@ end
 
 hold on
 
-h12_x = find(h12);
-plot(h12_x-1, 0.55*ones(1,length(h12_x)),'*','Color','k','LineWidth',1,'MarkerSize',8)
+plot(find(Tukeys(1,:))-1,0.5*ones(1,length(find(Tukeys(1,:)))),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
 hold off
 
@@ -391,8 +435,7 @@ end
 
 hold on
 
-h34_x = find(h34);
-plot(h34_x-1, 0.55*ones(1,length(h34_x)),'*','Color','k','LineWidth',1,'MarkerSize',8)
+plot(find(Tukeys(3,:))-1,0.5*ones(1,length(find(Tukeys(3,:)))),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
 hold off
 
