@@ -132,6 +132,44 @@ for tt = 1:nTrialTypes
     
 end
 
+%% Calculate point to point t-tests in the full curve
+% Bonferroni correction with 6 comparions ( 6 points of the test curve)
+
+TTestResAdaptation = zeros(4,30);
+alpha = 0.05;
+nComp = 6;
+
+toStatTest = struct();
+
+for tt = 1:nTrialTypes
+    toStatTest.(trialTypes{tt}) = squeeze(mean(ERA.bilateralMT.(trialTypes{tt}),2));
+end
+
+for jj = 1:30
+
+    
+   [TTestResAdaptation(1,jj),TTestResAdaptation(2,jj)] = ttest(toStatTest.Coh_aCoh(:,jj),toStatTest.Coh_aInCoh(:,jj));
+   
+   [TTestResAdaptation(3,jj),TTestResAdaptation(4,jj)] = ttest(toStatTest.InCoh_aCoh(:,jj),toStatTest.InCoh_aInCoh(:,jj));
+
+   [TTestResAdaptation(5,jj),TTestResAdaptation(6,jj)] = ttest(toStatTest.Coh_aInCoh(:,jj),toStatTest.Coh_aNA(:,jj));
+
+   [TTestResAdaptation(7,jj),TTestResAdaptation(8,jj)] = ttest(toStatTest.InCoh_aCoh(:,jj),toStatTest.InCoh_aNA(:,jj));
+   
+   TTestResAdaptation(2,jj) = TTestResAdaptation(2,jj) * nComp;
+   TTestResAdaptation(1,jj) = TTestResAdaptation(2,jj) < alpha;
+
+   TTestResAdaptation(4,jj) = TTestResAdaptation(4,jj) * nComp;
+   TTestResAdaptation(3,jj) = TTestResAdaptation(4,jj) < alpha;
+
+   TTestResAdaptation(6,jj) = TTestResAdaptation(6,jj) * nComp;
+   TTestResAdaptation(5,jj) = TTestResAdaptation(6,jj) < alpha;
+
+   TTestResAdaptation(8,jj) = TTestResAdaptation(8,jj) * nComp;
+   TTestResAdaptation(7,jj) = TTestResAdaptation(8,jj) < alpha;
+      
+end
+
 %% Figure 1 - Bilateral hMT+
 fig1 = figure('Name','Group ERA','Position',[100 100 1100 900]);
 xvector = -2:27;
@@ -156,6 +194,11 @@ for tt = [1 2 3]
     
     hold on    
 end
+
+z = find(TTestResAdaptation(1,:));
+z = z(z > 15+3 & z < 22+3); % limit to the 6 points of the test period
+
+plot(xvector(z), 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
 
 hold off
 xx = [xvector(1)-1 xvector(end)+1];
@@ -203,6 +246,11 @@ for tt = [5 4 6]
     hold on    
 end
 
+z = find(TTestResAdaptation(3,:));
+z = z(z > 15+3 & z < 22+3); % limit to the 6 points of the test period
+
+plot(xvector(z), 1.1*ones(1,length(z)),'*','Color','k','LineWidth',1,'MarkerSize',8)
+
 hold off
 xx = [xvector(1)-1 xvector(end)+1];
 yy = [-2 ceil(absMax+0.5)];
@@ -239,7 +287,7 @@ print(fig1,fullfile(outputFolder,sprintf('Figures_fmriprep_1_psc.svg')),'-dsvg')
 %toPlotSem = zeros(8,6);
 toTestMean = struct();
 delay_tc = 3;
-x_auc = (15:22) + delay_tc; % 1 before + test block + 1 after
+x_auc = (15:21) + delay_tc; % 1 before + test block
 
 for tt = 1:6
     
@@ -251,24 +299,24 @@ for tt = 1:6
     
 end
 
-nComb = 3;
+nComb = 3*6; % 3 conds x 6 data points
 
-p12 = zeros(1,8);
-h12 = zeros(1,8);
-p34 = zeros(1,8);
-h34 = zeros(1,8);
+p12 = zeros(1,7);
+h12 = zeros(1,7);
+p34 = zeros(1,7);
+h34 = zeros(1,7);
 
-for jj = 1:8
+for jj = 1:7
     
     [~,p12aux] = ttest(toTestMean.Coh_aInCoh(:,jj),toTestMean.Coh_aCoh(:,jj));
 
     p12(jj) = p12aux * nComb;
-    h12(jj) = p12(jj) <= 0.05;
+    h12(jj) = round(p12(jj),2) <= 0.05;
     
     [~,p34aux] = ttest(toTestMean.InCoh_aCoh(:,jj),toTestMean.InCoh_aInCoh(:,jj));
 
     p34(jj) = p34aux * nComb;
-    h34(jj) = p34(jj) <= 0.05;
+    h34(jj) = round(p34(jj),2) <= 0.05;
     
 end
 
