@@ -44,7 +44,7 @@ figure('units','normalized','position',[0 0 0.25 0.35])
 movegui('center')
 
 line([0 4],[0 0],'LineStyle','--','color','k'), line([0 4],[1 1],'LineStyle','--','color','k'), hold on
-H = notBoxPlot(Results_D12_G,[1 2 3]);
+H = notBoxPlot(Results_D12_G_PerSub,[1 2 3]);
 ylim([-0.2 1.2]), xlim([0 4])
 yticks(0:0.2:1)
 ylabel('Ratio of Coherent responses')
